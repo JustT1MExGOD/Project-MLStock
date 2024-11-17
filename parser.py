@@ -2,10 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import datetime
+import os
 
 BASE_URL = "https://ria.ru/search/"
 QUERY = "Газпром"
 NEWS_CSV_FILE = "gazprom_news.csv"
+DETAILS_FILE = "gazprom_news_details.csv"
 
 TICKER = "GAZP"
 STOCK_CSV_FILE = "gazprom_stock_prices.csv"
@@ -73,6 +75,37 @@ def log_price_to_csv(file_path, ticker, price, timestamp):
             writer.writerow(['Ticker', 'Price', 'Timestamp'])
         writer.writerow([ticker, price, timestamp])
 
+def fetch_news_content(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        content = soup.find('div', class_='article__text') 
+        if content:
+            return content.text.strip()
+        else:
+            return "Содержимое новости не найдено."
+    except Exception as e:
+        return f"Ошибка при загрузке новости: {e}"
+
+def read_links_from_csv(file_path):
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Файл {file_path} не найден.")
+
+    links = []
+    with open(file_path, mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            links.append((row['Новость'], row['Ссылка'], row['Дата']))
+    return links
+
+def save_news_details(news_details, file_path):
+    with open(file_path, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Новость', 'Ссылка', 'Дата', 'Содержимое'])
+        writer.writerows(news_details)
+
 def main():
     print("Скачиваем новости про Газпром...")
     try:
@@ -95,6 +128,27 @@ def main():
         print(f"Цена акции {TICKER}: {price}, записано в файл {STOCK_CSV_FILE}")
     else:
         print(f"Не удалось получить цену акции {TICKER}.")
+
+    print("\nЧтение ссылок из файла новостей...")
+    try:
+        news_links = read_links_from_csv(NEWS_CSV_FILE)
+        if not news_links:
+            print("Ссылки на новости отсутствуют.")
+            return
+
+        news_details = []
+        print(f"Обнаружено {len(news_links)} ссылок. Начинаем извлечение содержимого...")
+
+        for i, (title, link, date) in enumerate(news_links, start=1):
+            print(f"[{i}/{len(news_links)}] Загружаем новость: {title}")
+            content = fetch_news_content(link)
+            news_details.append((title, link, date, content))
+
+        print("Сохранение содержимого новостей в файл...")
+        save_news_details(news_details, DETAILS_FILE)
+        print(f"Детали новостей сохранены в {DETAILS_FILE}.")
+    except Exception as e:
+        print(f"Произошла ошибка при обработке новостей: {e}")
 
 if __name__ == "__main__":
     main()
