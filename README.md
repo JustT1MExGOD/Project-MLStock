@@ -55,13 +55,13 @@
 
 ### Форматы CSV-файлов
 
-gazprom_news.csv:
+1. gazprom_news.csv:
 - Колонки: Новость, Ссылка, Дата.
 
-gazprom_news_details.csv:
+2. gazprom_news_details.csv:
 - Колонки: Новость, Ссылка, Дата, Содержимое.
 
-gazprom_stock_prices.csv:
+3. gazprom_stock_prices.csv:
 - Колонки: Ticker, Price, Timestamp.
   
 ### Логирование
