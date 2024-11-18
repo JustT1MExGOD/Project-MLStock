@@ -59,7 +59,7 @@ gazprom_news.csv:
 - Колонки: Новость, Ссылка, Дата.
 
 gazprom_news_details.csv:
--Колонки: Новость, Ссылка, Дата, Содержимое.
+- Колонки: Новость, Ссылка, Дата, Содержимое.
 
 gazprom_stock_prices.csv:
 - Колонки: Ticker, Price, Timestamp.
