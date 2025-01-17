@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выпадающее меню</title>
+    <style>
+        /* Основной стиль для меню */
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        /* Стиль для каждого пункта меню */
+        li {
+            float: left;
+        }
+
+        /* Стиль для ссылок в меню */
+        li a {
+            display: block;
+            padding: 14px 16px;
+            color: white;
+            text-align: left;
+            text-decoration: none;
+        }
+
+        /* При наведении на ссылку меняется фон */
+        li a:hover {
+            background-color: #111;
+        }
+
+        /* Скрыть подменю по умолчанию */
+        li ul {
+            display: none;
+            position: absolute;
+            min-width: 160px;
+            background-color: rgba(30, 30, 30, 0.9);
+        }
+
+        /* Показать подменю при наведении на родительский элемент */
+        li:hover > ul {
+            display: block;
+        }
+
+        /* Стиль для элементов в подменю */
+        li ul li {
+            float: none;
+        }
+    </style>
+</head>
+<body>
+
+    <ul>
+        <li><a href="#">Главная</a></li>
+        <li><a href="#">О нас</a>
+            <ul>
+                <li><a href="about.html">Наша команда</a></li>
+                <li><a href="history.html">История</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Услуги</a>
+            <ul>
+                <li><a href="service1.html">Услуга 1</a></li>
+                <li><a href="service2.html">Услуга 2</a></li>
+            </ul>
+        </li>
+        <li><a href="contact.html">Контакты</a></li>
+    </ul>
+
+</body>
+</html>
