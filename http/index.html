@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLStock - Аналитика акций и криптовалют</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #121212, #1e1e1e, #282828);
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: rgba(30, 30, 30, 0.9);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slide-down 0.5s ease;
+        }
+
+        @keyframes slide-down {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(90deg, #ff7b00, #ff5500);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(90deg, #ff5500, #ff7b00);
+        }
+
+        .feature-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid #333;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-bottom: 1px solid #333;
+            animation: fade-in 0.5s ease;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff5500;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            animation: slide-up 0.3s ease;
+        }
+
+        @keyframes slide-up {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        li a {
+            display: block;
+            padding: 14px 16px;
+            color: white;
+            text-align: left;
+            text-decoration: none;
+        }
+
+        li ul {
+            display: none;
+            position: absolute;
+            min-width: 160px;
+            background-color: rgba(30, 30, 30, 0.9);
+        }
+
+        li:hover > ul {
+            display: block;
+        }
+
+        li ul li {
+            float: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">MLStock</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#">Акции</a>
+                    <ul>
+                        <li><a href="./gazp.html">Газпром</a></li>
+                        <li><a href="./sber.html">Сбербанк</a></li>
+                        <li><a href="./vtb.html">ВТБ</a></li>
+                        <li><a href="./rosneft.html">Роснефть</a></li>
+                        <li><a href="./lukoil.html">Лукойл</a></li>
+                        <li><a href="./tatneft.html">Татнефть</a></li>
+                    </ul>
+                <li><a href="#features">Возможности</a></li>
+                <li><a href="#charts">Графики</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <h1>Добро пожаловать в MLStock</h1>
+        <p>Анализируйте данные о рынке акций и криптовалют с помощью передовых технологий машинного обучения.</p>
+        <a href="#charts" class="btn">Изучить графики</a>
+
+        <section id="stock-info" class="stock-info">
+            <h2>Стоимость акций</h2>
+            <div id="stock-list" class="stock-list">
+            </div>
+        </section>
+    </section>
+    
+    <section id="features" class="features">
+        <h2>Наши возможности</h2>
+        <div class="feature-card">
+            <h3>Прогнозы</h3>
+            <p>Предоставляем точные прогнозы цен на основе передовых алгоритмов машинного обучения. Наша система анализирует исторические данные и выявляет тренды.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Интерактивные графики</h3>
+            <p>Графики цен акций и криптовалют помогут вам наглядно увидеть изменения и принимать взвешенные решения.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Данные в реальном времени</h3>
+            <p>Получайте обновления стоимости акций и криптовалют напрямую из API ведущих биржевых платформ.</p>
+        </div>
+    </section>
+
+    <section id="charts" class="charts">
+        <h2>Графики данных</h2>
+        <p>Исследуйте динамику акций ведущих компаний и криптовалют с помощью наших графиков. Это поможет вам следить за изменениями на рынке и принимать правильные решения.</p>
+        <canvas id="priceChart"></canvas>
+    </section>
+
+    <section id="contact" class="contact">
+        <h2>Свяжитесь с нами</h2>
+        <p>У вас есть вопросы? Напишите нам по адресу <a href="mailto:support@mlstock.ru">support@mlstock.ru</a>. Мы также доступны в социальных сетях:</p>
+        <ul>
+            <li><a href="https://vk.com/just_shxwt1me">ВКонтакте</a></li>
+            <li><a href="https://t.me/Just_T1MExGOD">Telegram</a></li>
+            <li><a href="https://www.youtube.com/@last_from_zenin">YouTube</a></li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 MLStock. Все права защищены. <a href="#">Политика конфиденциальности</a> | <a href="#">Пользовательское соглашение</a></p>
+    </footer>
+
+    <script>
+        const ctx = document.getElementById('priceChart').getContext('2d');
+
+        const apiCache = {}; 
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 5000);
+        }
+
+        async function fetchMoexData(url) {
+            if (apiCache[url]) return apiCache[url];
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
+                const data = await response.json();
+
+                apiCache[url] = data; 
+                return data;
+            } catch (error) {
+                showNotification(`Ошибка загрузки данных: ${error.message}`, 'error');
+                console.error(error);
+                return null;
+            }
+        }
+
+        async function updateStockList() {
+            const tickers = [
+                { name: 'Сбербанк', symbol: 'SBER' },
+                { name: 'Лукойл', symbol: 'LKOH' },
+                { name: 'Яндекс', symbol: 'YNDX' },
+                { name: 'Роснефть', symbol: 'ROSN' },
+                { name: 'ВТБ', symbol: 'VTBR' },
+                { name: 'Татнефть', symbol: 'TATN' },
+                { name: 'Газпром', symbol: 'GAZP' }
+            ];
+
+            const stockList = document.getElementById('stock-list');
+            stockList.innerHTML = '';
+
+            for (const stock of tickers) {
+                const url = `https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/${stock.symbol}.json`;
+                const data = await fetchMoexData(url);
+
+                if (data && data.marketdata && data.marketdata.data.length > 0) {
+                    const price = data.marketdata.data[0][12];
+                    const stockItem = document.createElement('div');
+                    stockItem.className = 'stock-item';
+                    stockItem.innerHTML = `
+                        <span>${stock.name}</span>
+                        <span class="price">${price.toFixed(2)} ₽</span>
+                    `;
+                    stockList.appendChild(stockItem);
+                } else {
+                    showNotification(`Нет данных для ${stock.name}`, 'warning');
+                }
+            }
+        }
+
+        async function renderCharts() {
+            const tickers = [
+                { name: 'Сбербанк', symbol: 'SBER' },
+                { name: 'ВТБ', symbol: 'VTBR' },
+                { name: 'Газпром', symbol: 'GAZP' }
+            ];
+
+            const datasets = [];
+            let labels = [];
+
+            for (const stock of tickers) {
+                const url = `https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/${stock.symbol}/candles.json?interval=24&from=2024-01-01`;
+                const data = await fetchMoexData(url);
+
+                if (data && data.candles && data.candles.data.length > 0) {
+                    const prices = data.candles.data.map(item => item[0]);
+                    if (labels.length === 0) labels = data.candles.data.map(item => item[6]);
+
+                    datasets.push({
+                        label: `${stock.name} (${stock.symbol})`,
+                        data: prices,
+                        borderColor: getRandomColor(),
+                        borderWidth: 2
+                    });
+                } else {
+                    showNotification(`Нет данных для графика ${stock.name}`, 'warning');
+                }
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#ffffff' } } },
+                    scales: {
+                        x: { ticks: { color: '#ffffff' } },
+                        y: { ticks: { color: '#ffffff' } }
+                    }
+                }
+            });
+        }
+
+        function getRandomColor() {
+            return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStockList();
+            renderCharts();
+            setInterval(updateStockList, 30000);
+        });
+    </script>
+</body>
+</html>
